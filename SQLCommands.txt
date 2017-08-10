@@ -1,0 +1,11 @@
+CREATE TABLE user (id KEY TEXT NOT NULL, username TEXT NOT NULL, password TEXT NOT NULL, email TEXT NOT NULL, firstName TEXT NOT NULL, lastName TEXT NOT NULL, gender char(1) NOT NULL, fatherLink TEXT, motherLink TEXT, spouseLink TEXT);
+
+CREATE TABLE person (id TEXT UNSIGNED NOT NULL, firstName TEXT NOT NULL, lastName TEXT NOT NULL, gender char(1) NOT NULL, fatherLink TEXT, motherLink TEXT, spouseLink TEXT, descendant TEXT);
+
+CREATE TABLE event (id KEY TEXT UNSIGNED NOT NULL, personLink TEXT NOT NULL, userLink TEXT NOT NULL, type TEXT NOT NULL, year INT NOT NULL);
+
+CREATE TABLE location (longitude DOUBLE NOT NULL, latitude DOUBLE NOT NULL, country TEXT NOT NULL, city TEXT NOT NULL, eventLink KEY TEXT NOT NULL);
+
+CREATE TABLE authToken (userLink KEY TEXT NOT NULL, timeMin INT NOT NULL, timeHour INT NOT NULL, dateDay INT NOT NULL, dateMonth INT NOT NULL, dateYear INT NOT NULL, value KEY TEXT NOT NULL);
+
+create table if not exists countTable (eventCount INT NOT NULL, personCount INT NOT NULL, userCount INT NOT NULL);

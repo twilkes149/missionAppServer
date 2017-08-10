@@ -1,0 +1,182 @@
+package serverModel;
+import java.util.ArrayList;
+
+/**
+ * The object oriented model of a User, inherits from Person<br>
+ * Fields: userName, password, email<br>
+ * @author Tucker
+ *
+ */
+public class User {
+	private String userName;
+	private String password;
+	private String email;
+	private AuthToken authToken;
+	private int userId;
+	protected static int count=1;
+	
+	protected String firstName;
+	protected String lastName;
+	protected char gender;
+	protected Person mother;
+	protected Person father;
+	protected Person spouse;
+	protected ArrayList<Event> eventList;
+	
+	public User() {
+		this.userId = User.count;
+		User.count++;
+		
+		userName = null;
+		password = null;
+		authToken = null;
+		father = null;
+		mother = null;
+		spouse = null;
+		firstName = null;
+		lastName = null;
+		authToken = new AuthToken(userId);
+		eventList = new ArrayList<Event>();
+	}
+	
+	public User(String firstName, String lastName, char gender, String userName, String password, String email) {
+		father = null;
+		mother = null;
+		spouse = null;
+		this.userId = User.count;
+		User.count++;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.gender = gender;
+		this.userName = userName;
+		this.password = password;
+		this.email = email;
+		authToken = new AuthToken(userId);
+		eventList = new ArrayList<Event>();
+	}
+	
+	public String toString() {
+		String result = firstName + " " + lastName + "\n  UserName: " + userName
+				+ "\n  Password: " + password 
+				+ "\n  Email: " + email + "\n  AuthToken: " + authToken.toString();
+		if (father != null)
+			result += "\n  Father: " + father.getFirstName() + " " + father.getLastName();
+		if (mother != null)
+			result += "\n  Mother: " + mother.getFirstName() + " " + mother.getLastName();
+		if (spouse != null)
+			result += "\n  Spouse: " + spouse.getFirstName() + " " + spouse.getLastName();
+		return result;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public char getGender() {
+		return gender;
+	}
+
+	public void setGender(char gender) {
+		this.gender = gender;
+	}
+
+	public Person getMother() {
+		return mother;
+	}
+
+	public void setMother(Person mother) {
+		this.mother = mother;
+	}
+
+	public Person getFather() {
+		return father;
+	}
+
+	public void setFather(Person father) {
+		this.father = father;
+	}
+
+	public Person getSpouse() {
+		return spouse;
+	}
+
+	public void setSpouse(Person spouse) {
+		this.spouse = spouse;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public AuthToken getAuthToken() {
+		return authToken;
+	}
+	public void setAuthToken(AuthToken authToken) {
+		this.authToken = authToken;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	public void setEventList(ArrayList<Event> list) {
+		if (list != null)
+			for (int i = 0; i < list.size(); i++)
+				eventList.add(list.get(i));
+	}
+	
+	/**
+	 * Returns the list of events for this user
+	 * @return list of events
+	 */
+	public ArrayList<Event> getEvents() {
+		return eventList;
+	}
+	
+	/** 
+	 * Adds an event to the user
+	 * @param event the event to add
+	 */
+	public void addEvent(Event event) {
+		eventList.add(event);
+	}
+	
+	/**
+	 * Returns how many events this user has
+	 * @return number of events
+	 */
+	public int eventListSize() {
+		return eventList.size();
+	}
+
+}

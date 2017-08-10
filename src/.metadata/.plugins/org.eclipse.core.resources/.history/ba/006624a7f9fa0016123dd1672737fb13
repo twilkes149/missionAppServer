@@ -1,0 +1,61 @@
+package database;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import serverModel.Location;
+
+/**
+ * A class to represent a location, which each event has\n
+ * Fields: longitude, latitude, country, city, year
+ * @author Tucker
+ *
+ */
+public class LocationDAO extends DatabaseDriver{
+	
+	public LocationDAO(String name) {
+		super(name);
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * Returns a location
+	 * @param eventID the id of the event
+	 * @return a list of locations
+	 */
+	public Location getLocation(int eventID) {
+		Connection connection;
+		Location location = new Location(eventID);
+		try {
+			connection = Setup.initialize(databaseName);
+			Statement stat = connection.createStatement();
+			ResultSet rs = stat.executeQuery("SELECT * from location WHERE eventLink = '" + eventID + "';");
+			
+			location.setEventID(eventID);
+			location.setLongitude(rs.getString(2));
+			location.setLatitude(rs.getString(3));
+			location.setCountry(rs.getString(4));
+			location.setCity(rs.getString(5));
+			connection.close();
+		}
+		catch (Exception e) {
+			return null;
+		}
+		return location;		
+	}
+	
+	public boolean saveLocation(Location location) throws Exception {
+		Connection connection = Setup.initialize(databaseName);
+		PreparedStatement stat = connection.prepareStatement("insert into location values(?,?,?,?,?);");
+		
+		stat.setString(1, location.geti);
+		return true;
+	}
+	
+	public static void main(String[] args) {
+		LocationDAO val = new LocationDAO("familyHistory");
+		val.clear();//clear the database
+	}
+}

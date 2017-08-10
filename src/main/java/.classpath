@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/home/tucker/Documents/Programming/MissionApp/missionAppServer/missionAppServer/src/libs/gson-2.6.2.jar"/>
+	<classpathentry kind="lib" path="/home/tucker/Documents/Programming/MissionApp/missionAppServer/missionAppServer/src/libs/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="/home/tucker/Documents/Programming/MissionApp/missionAppServer/missionAppServer/src/libs/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="/home/tucker/Documents/Programming/MissionApp/missionAppServer/missionAppServer/src/libs/ojdbc6.jar"/>
+	<classpathentry kind="lib" path="/home/tucker/Documents/Programming/MissionApp/missionAppServer/missionAppServer/src/libs/sqlite-jdbc-3.8.7.jar"/>
+	<classpathentry kind="output" path=""/>
+</classpath>

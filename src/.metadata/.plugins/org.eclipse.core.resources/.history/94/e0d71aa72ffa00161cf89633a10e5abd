@@ -1,0 +1,51 @@
+package Services;
+
+import java.time.LocalDate;
+
+import Services.Input.*;
+import database.DatabaseDriver;
+import Services.Response.*;
+import serverModel.User;
+
+/**
+ * A service class to access the database and register a user implements the service class
+ * @author Tucker
+ *
+ */
+public class RegisterService implements Service {
+	private DatabaseDriver database;
+	
+	public RegisterService() {
+		database = new DatabaseDriver("familyHistory");
+	}
+
+	/** Creates a user using the provided information. Adds data to the database and returns an authToken for the user
+	 * @param data the information needed to register a person:\n
+	 * user name, password, email, first name, last name, and gender
+	 * @return returns a response object containing the user's authToken, userName, and ID
+	 */
+	public Response fillService(Input data) throws Exception{
+		RegisterInput input = null;
+		if (data instanceof RegisterInput)
+			input = (RegisterInput) data;
+		else
+			throw new Exception("Input data was null");
+		
+		//getting the user data from the input
+		User user = new User(input.getFirstName(), input.getLastName(), 
+				input.getGender(), input.getUserName(), input.getPassword(), 
+				input.getEmail());
+		
+		database.saveUser(user);
+		RegisterResponse result = new RegisterResponse();
+		result.setID("" + user.getUserId());
+		result.setUserName(user.getUserName());
+		
+		return result;
+	}
+	
+	private String createAuthToken() {
+		LocalDate today = new LocalDate();
+		return null;
+	}
+}

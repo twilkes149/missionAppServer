@@ -1,0 +1,22 @@
+package Services.ReadJson;
+import com.google.gson.Gson;
+import java.io.*;
+
+public class ReadJson {
+	
+	public static Names readNames() {
+		Names result = null;
+		Gson gson = new Gson();
+		File file = new File("C:\\Users\\Tucker\\Documents\\School\\College\\Spring 2017\\Programming\\FamilyMapServer\\data\\json\\mnames.json");
+		
+		InputStreamReader val;
+		try {
+			val = new InputStreamReader(new FileInputStream(file));
+		}
+		catch(FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return result;
+	}
+}

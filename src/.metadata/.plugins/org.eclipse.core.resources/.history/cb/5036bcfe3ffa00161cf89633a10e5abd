@@ -1,0 +1,54 @@
+package Services.Response;
+
+import database.AuthTokenDAO;
+
+/**
+ * A class that contains all of the information that the login service returns
+ * Inherits from the response class
+ * Fields: userName, id
+ * @author Tucker
+ *
+ */
+public class LoginResponse extends Response{
+	private String userName;
+	private String id;
+	
+	public LoginResponse() {
+		userName = null;
+		id = null;
+		authToken = null;
+	}
+	
+	public String toString() {
+		return "Username: " + userName + "\nAuthToken: " + authToken.toString();
+	}
+	
+	/**
+	 * @param at the authToken of the user
+	 * @param un the userName of the user
+	 * @param i the id of the user
+	 */
+	public LoginResponse(AuthTokenDAO at, String un, String i) {
+		authToken = at;
+		userName = un;
+		id = i;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+
+}

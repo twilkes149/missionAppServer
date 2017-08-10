@@ -1,0 +1,139 @@
+package database;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import serverModel.Person;
+
+/**
+ * The DAO for a Person<br>
+ * Fields: firstName, lastName, gender, mother, father, spouse, descendant, id<br>
+ * @author Tucker
+ * 
+ */
+public class PersonDAO extends DatabaseDriver{
+	EventDAO eventDriver;
+	public PersonDAO(String name) {
+		super(name);
+		eventDriver = new EventDAO(DatabaseDriver.databaseName);
+	}
+	
+	public Person getPerson(int id) {
+		return this.getPerson(id, true);
+	}
+
+	/** Gets information about a person from the database
+	 * @param id the ID of the person
+	 * @return returns the person if it exists, otherwise returns null
+	 */
+	public Person getPerson(int id, boolean getSpouse) {
+		if (id <= 0)
+			return null;//invalid id for a person
+		
+		//TODO add person's events
+		Connection connection = null;
+		//creating the personDAO to return
+		Person result = new Person();
+		try {
+			connection = Setup.initialize(databaseName);
+			Statement stat = connection.createStatement();
+			
+			//getting the person from the database
+			ResultSet rs = stat.executeQuery("SELECT * From person WHERE id = '" + id + "';");
+			
+			//setting the data to query result
+			result.setFirstName(rs.getString(2));
+			result.setLastName(rs.getString(3));
+			result.setGender(rs.getString(4).charAt(0));
+			//System.out.println("This person: "+ result.getFirstName());
+			//System.out.print("spouseLink: " + rs.getInt(7) + "\n");
+			result.setFather(this.getPerson(rs.getInt(5)));
+			result.setMother(this.getPerson(rs.getInt(6)));
+			if (getSpouse)
+				result.setSpouse(this.getPerson(rs.getInt(7),false));
+			
+			rs.close();
+			connection.close();
+		}
+		catch (Exception e) {
+			return null;
+		}
+		return result;
+	}
+	
+	/**  adds a person to the database
+	 * @param person the person to save to the database
+	 * @return returns true if successful 
+	 */
+	public boolean savePerson(Person person) throws Exception{
+		//check to see if a person with this id is already in the database
+		if (this.getPerson(person.getId()) != null)
+			throw new Exception("This id already exists");
+		Connection connection = Setup.initialize(databaseName);
+		PreparedStatement stat = connection.prepareStatement("insert into person values (?,?,?,?,?,?,?,?);");
+		stat.setString(1, "" + person.getId());
+		stat.setString(2, person.getFirstName());
+		stat.setString(3, person.getLastName());
+		stat.setString(4, "" + person.getGender());
+		if (person.getFather() != null)
+			stat.setString(5, "" + person.getFather().getId());
+		else
+			stat.setString(5, "");
+		if (person.getMother() != null)
+			stat.setString(6, "" + person.getMother().getId());
+		else
+			stat.setString(6, "");
+		if (person.getSpouse() != null)
+			stat.setString(7, "" + person.getSpouse().getId());
+		else
+			stat.setString(7, "");
+		if (person.getDescendant() != null)
+			stat.setString(8, "" + person.getDescendant().getUserId());
+		else
+			stat.setString(8, "");
+		stat.addBatch();
+		
+		connection.setAutoCommit(false);//prepares a transaction
+        stat.executeBatch();//executes the command
+        connection.setAutoCommit(true);//if execute batch failed, it doesn't die
+		connection.close();
+
+		//adding the user's events to the database
+        for (int i = 0; i < person.eventSize(); i++)
+        	if (person.getEvent(person.getEvent(i).getId() ) == null)//if the even hasn't already been saved in the database
+        		eventDriver.saveEvent(person.getEvent(i));
+        
+        //if the father isn't in the database and there is a father -> add the father
+        if (person.getFather() != null && this.getPerson(person.getFather().getId()) == null)
+        	this.savePerson(person.getFather());
+        if (person.getMother() != null && this.getPerson(person.getMother().getId()) == null)
+        	this.savePerson(person.getMother());
+        
+        //if the person's spouse is not in the database -> add it
+        if (person.getSpouse() != null && this.getPerson(person.getSpouse().getId()) == null)
+        	this.savePerson(person.getSpouse());
+		return true;
+	}
+	
+	public static void main(String[] args) {
+		PersonDAO personDriver = new PersonDAO("familyHistory");
+		try {
+			personDriver.clear();
+			personDriver.initilize();
+			Person mother = new Person("Christy", "Wilkes", 'm', null, null, null, null);
+			Person father = new Person("Koray", "Wilkes", 'm', null, null, mother, null);
+			mother.setSpouse(father);
+			personDriver.savePerson(new Person("Tucker", "Wilkes", 'm', mother, father, null, null));
+		
+			Person me = personDriver.getPerson(2);
+			System.out.println(me.toString());
+			me = personDriver.getPerson(1);
+			System.out.println("\n" + me.toString());
+		}
+		catch (Exception e) {
+			System.err.println("Error with person: " + e.getMessage() + "\n");
+		}
+	}
+}

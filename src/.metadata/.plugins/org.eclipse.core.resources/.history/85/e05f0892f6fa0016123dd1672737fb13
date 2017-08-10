@@ -1,0 +1,71 @@
+package database;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+/**
+ * The DAO for Events
+ * @author Tucker
+ *
+ */
+public class EventDAO extends DatabaseDriver{
+	public EventDAO(String name) {
+		super(name);
+		// TODO Auto-generated constructor stub
+	}
+
+	/** Gets information about an event from the database
+	 * @param id the ID of the event
+	 * @return returns the event if it exists, otherwise returns null
+	 */
+	public EventDAO getEvent (int id) {
+		Connection connection = null;
+		EventDAO result = new EventDAO();
+		try {
+			connection = Setup.initialize(databaseName);
+			Statement stat = connection.createStatement();
+			ResultSet rs = stat.executeQuery("SELECT * from event WHERE id = '" + id + "';");
+			
+			result.setId(rs.getInt(1));
+			result.setOwner(rs.getString(2));
+			result.setDescendant(rs.getString(3));
+			result.setType(rs.getString(4));
+			rs.close();
+			
+			result.setLocation(this.getLocation(result.getId()));
+			connection.close();
+			return result;
+		}
+		catch (Exception e) {//failed getting event probably because it's not in the database
+			return null;
+		}
+	}
+	
+	/**
+	 * Returns a location
+	 * @param eventID the id of the event
+	 * @return a list of locations
+	 */
+	private LocationDAO getLocation(int eventID) {
+		Connection connection;
+		LocationDAO location = new LocationDAO();
+		try {
+			connection = Setup.initialize(databaseName);
+			Statement stat = connection.createStatement();
+			ResultSet rs = stat.executeQuery("SELECT * from location WHERE eventLink = '" + eventID + "';");
+			
+			location.setEventID(eventID);
+			location.setLongitude(rs.getString(2));
+			location.setLatitude(rs.getString(3));
+			location.setCountry(rs.getString(4));
+			location.setCity(rs.getString(5));
+			location.setYear(rs.getString(6));
+			connection.close();
+		}
+		catch (Exception e) {
+			return null;
+		}
+		return location;		
+	}
+}

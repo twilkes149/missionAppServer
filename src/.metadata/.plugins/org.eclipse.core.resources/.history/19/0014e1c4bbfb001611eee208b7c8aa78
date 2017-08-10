@@ -1,0 +1,11 @@
+package testCases;
+import database.*;
+public class TestServerModel {
+	org.junit.runner.JUnitCore.main(
+            "dataaccess.DatabaseTest",
+            "spellcheck.URLFetcherTest",
+            "spellcheck.WordExtractorTest",
+            "spellcheck.DictionaryTest",
+            "spellcheck.SpellingCheckerTest");
+}
+}

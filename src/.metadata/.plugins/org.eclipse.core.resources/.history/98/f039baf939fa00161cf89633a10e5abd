@@ -1,0 +1,43 @@
+package Services.Response;
+
+import database.AuthTokenDAO;
+
+public class RegisterResponse extends Response{
+	private String userName;
+	private String ID;
+	
+	/**
+	 * sets all fields to null
+	 */
+	public RegisterResponse() {
+		authToken = null;
+		userName = null;
+		ID = null;
+	}
+	/**
+	 * @param at the authToken of the user
+	 * @param un the userName of the user
+	 * @param id the id of the user
+	 */
+	public RegisterResponse(String at, String un, String id) {
+		ID = id;
+		authToken = at;
+		userName = un;
+	}
+	
+	public String toString() {
+		return "UserName: " + userName +"\nID: " + ID;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getID() {
+		return ID;
+	}
+	public void setID(String iD) {
+		ID = iD;
+	}
+}

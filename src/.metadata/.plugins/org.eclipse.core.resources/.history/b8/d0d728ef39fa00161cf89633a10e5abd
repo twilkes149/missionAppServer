@@ -1,0 +1,22 @@
+package Services.Response;
+/**
+ * A response superclass. This allows all services to implement the service interface and return a Response
+ * Fields: authToken
+ * @author Tucker
+ *
+ */
+public class Response {
+	protected AuthToken authToken;
+	
+	public Response() {
+		authToken = null;
+	}
+
+	public String getAuthToken() {
+		return authToken;
+	}
+
+	public void setAuthToken(String authToken) {
+		this.authToken = authToken;
+	}
+}

@@ -1,0 +1,66 @@
+package database;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+/**
+ * The DAO for an authToken<br>
+ * Fields: value, expiration date, and the user id this authToken belongs to
+ * @author Tucker
+ */
+public class AuthTokenDAO {
+	private LocalTime value;
+	private LocalTime exTime;
+	private LocalDate now;
+	private int userID;
+	
+	/** 
+	 * @param val the value of the authToken
+	 */
+	public AuthTokenDAO(int userID) {
+		value = LocalTime.now();
+		exTime = value.plusHours(1);
+		now = LocalDate.now();
+		this.userID = userID;
+	}
+	
+	public int getMin() {
+		return value.getMinute();
+	}
+	
+	public int getHour() {
+		return value.getHour();
+	}
+	
+	public int getDay() {
+		return now.getDayOfMonth();
+	}
+
+	public int getUerID() {
+		return userID;
+	}
+
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+	
+	/**
+	 * Checks if this is a valid authToken
+	 * @return true if valid, false otherwise
+	 */
+	public boolean isValid() {
+		LocalTime now = LocalTime.now();
+		LocalDate dateNow = LocalDate.now();
+		return now.isBefore(exTime) && dateNow.equals(this.now);
+	}
+	
+	public String toString() {
+		return "Value: " + value.toString() + "\nDay: " + now.toString() + "\nExpires:" + exTime.toString();
+	}
+	
+	public static void main(String[] args) {
+		AuthTokenDAO val = new AuthTokenDAO();
+		System.out.println(val.toString());
+		System.out.println(val.isValid());
+	}
+}

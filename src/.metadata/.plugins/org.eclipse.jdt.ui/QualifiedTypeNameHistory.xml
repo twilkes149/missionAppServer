@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="serverModel.Event"/>
+<fullyQualifiedTypeName name="Services.Input"/>
+<fullyQualifiedTypeName name="Services.RegisterInput"/>
+<fullyQualifiedTypeName name="Services.RegisterResponse"/>
+<fullyQualifiedTypeName name="Services.LoginResponse"/>
+<fullyQualifiedTypeName name="Services.LoginInput"/>
+<fullyQualifiedTypeName name="Services.ClearResponse"/>
+<fullyQualifiedTypeName name="Services.FillResponse"/>
+<fullyQualifiedTypeName name="Services.FillInput"/>
+<fullyQualifiedTypeName name="Services.PersonResponse"/>
+<fullyQualifiedTypeName name="Services.PersonInput"/>
+<fullyQualifiedTypeName name="Services.EventInput"/>
+<fullyQualifiedTypeName name="Services.LoadResponse"/>
+<fullyQualifiedTypeName name="Services.LoadInput"/>
+<fullyQualifiedTypeName name="database.AuthToken"/>
+<fullyQualifiedTypeName name="java.sql.DriverManager"/>
+<fullyQualifiedTypeName name="java.sql.Connection"/>
+<fullyQualifiedTypeName name="java.beans.Statement"/>
+<fullyQualifiedTypeName name="serverModel.Person"/>
+<fullyQualifiedTypeName name="java.sql.ResultSet"/>
+<fullyQualifiedTypeName name="java.sql.ResultSetMetaData"/>
+<fullyQualifiedTypeName name="serverModel.User"/>
+<fullyQualifiedTypeName name="java.util.Date"/>
+<fullyQualifiedTypeName name="java.sql.Date"/>
+<fullyQualifiedTypeName name="java.time.LocalTime"/>
+<fullyQualifiedTypeName name="java.time.LocalDate"/>
+<fullyQualifiedTypeName name="database.Setup"/>
+<fullyQualifiedTypeName name="database.DatabaseDriver"/>
+<fullyQualifiedTypeName name="database.UserDAO"/>
+<fullyQualifiedTypeName name="database.AuthTokenDAO"/>
+<fullyQualifiedTypeName name="com.google.gson.Gson"/>
+<fullyQualifiedTypeName name="serverModel.Location"/>
+<fullyQualifiedTypeName name="java.sql.PreparedStatement"/>
+<fullyQualifiedTypeName name="serverModel.AuthToken"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+</qualifiedTypeNameHistroy>

@@ -1,0 +1,13 @@
+package Services.ReadJson;
+import com.google.gson.Gson;
+import java.io.*;
+
+public class ReadJson {
+	
+	public static Names readNames() {
+		Names result = null;
+		Gson gson = new Gson();
+		
+		return result;
+	}
+}

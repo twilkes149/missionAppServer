@@ -1,0 +1,14 @@
+package serverModel;
+import Services.*;
+import Services.Input.*;
+import Services.Response.*;
+
+public class Server {
+
+	public RegisterResponse register(RegisterInput input) throws Exception{
+		RegisterService service = new RegisterService();
+		
+		service.fillService(input);
+		return null;
+	}
+}

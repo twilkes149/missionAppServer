@@ -1,0 +1,58 @@
+package database;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import serverModel.AuthToken;
+
+public class AuthTokenDAO extends DatabaseDriver{
+
+	public AuthTokenDAO(String name) {
+		super(name);
+		// TODO Auto-generated constructor stub
+	}
+
+	public boolean saveAuthToken(AuthToken token) throws Exception{
+		Connection connection = null;
+		connection = Setup.initialize(databaseName);
+		PreparedStatement stat = connection.prepareStatement("insert into authToken values(?,?,?,?,?,?);");
+		
+		stat.setString(1, "" + token.getUerID());
+		stat.setString(2, "" + token.getMin());
+		stat.setString(3, "" + token.getHour());
+		stat.setString(4, "" + token.getDay());
+		stat.setString(5, "" + token.getMonth());
+		stat.setString(6, "" + token.getYear());
+		stat.addBatch();
+		
+		connection.setAutoCommit(false);
+		stat.executeBatch();
+		connection.setAutoCommit(true);
+		connection.close();
+		return true;
+	}
+	
+	public AuthToken getAuthToken(int userID) {
+		Connection connection = null;
+		AuthToken result = null;
+		try {
+			connection = Setup.initialize(databaseName);
+			Statement stat = connection.createStatement();
+			ResultSet rs = stat.executeQuery("SELECT * from authToken WHERE userLink = '" + userID + "';");
+			
+			int min = rs.getInt(2);
+			int hour = rs.getInt(3);
+			int day = rs.getInt(4);
+			int month = rs.getInt(5);
+			int year = rs.getInt(6);
+			result = new AuthToken(userID, hour, min, day, month, year);
+			connection.close();
+			return result;
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
+}

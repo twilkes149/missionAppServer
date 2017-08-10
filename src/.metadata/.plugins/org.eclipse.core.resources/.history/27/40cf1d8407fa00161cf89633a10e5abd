@@ -1,0 +1,31 @@
+package Services;
+import Services.Input.*;
+import database.DatabaseDriver;
+import Services.Response.*;
+
+/**
+ * A service class to access the database and register a user implements the service class
+ * @author Tucker
+ *
+ */
+public class RegisterService implements Service {
+	private static DatabaseDriver database;
+	
+	private RegisterService() {
+		database = new DatabaseDriver("familyHistory");
+	}
+
+	/** Creates a user using the provided information. Adds data to the database and returns an authToken for the user
+	 * @param data the information needed to register a person:\n
+	 * user name, password, email, first name, last name, and gender
+	 * @return returns a response object containing the user's authToken, userName, and ID
+	 */
+	public static Response fillService(Input data) {
+		
+		RegisterInput input = null;
+		if (data instanceof RegisterInput)
+			input = (RegisterInput) data;
+		
+		return new RegisterResponse();
+	}
+}

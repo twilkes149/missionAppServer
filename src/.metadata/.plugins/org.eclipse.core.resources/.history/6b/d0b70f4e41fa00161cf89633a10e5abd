@@ -1,0 +1,63 @@
+package serverModel;
+import Services.*;
+import Services.Input.*;
+import Services.Response.*;
+import database.Setup;
+
+public class Server {
+
+	public RegisterResponse register(RegisterInput input) throws Exception{
+		RegisterService service = new RegisterService();
+		
+		RegisterResponse result = (RegisterResponse) service.fillService(input);
+		
+		return result;
+	}
+	
+	/**
+	 * Drops all tables and recreates them
+	 * @return a message detailing a success or failure
+	 */
+	public ClearResponse clear() {
+		ClearService service = new ClearService();
+		
+		ClearResponse result = (ClearResponse) service.fillService(null);
+		
+		try {
+			Setup.createTables(Setup.initialize("familyHistory"));
+		}
+		catch (Exception e){
+			result.setMessage(result.getMessage() + "\n" + e.getMessage());
+		}
+		return result;
+	}
+	
+	public LoginResponse login(LoginInput input) throws Exception {
+		LoginService service = new LoginService();
+		LoginResponse result = (LoginResponse) service.fillService(input);
+		return result;
+	}
+	
+	public static void main(String[] args) {
+		Server server = new Server();
+		
+		RegisterInput input = new RegisterInput("Tucker", "Wilkes", 'm', "twilkes149", "password", "twilkes149@gmail.com");
+		RegisterInput input1 = new RegisterInput("Jesse", "Wood", 'm', "jhwblender", "password123", "jwood@gmail.com");
+		try {
+			ClearResponse clearResult = server.clear();
+			
+			System.out.println("cleared: " + clearResult.getMessage());
+			RegisterResponse result = server.register(input);
+			System.out.println("registered a user");
+			System.out.println(result.toString());
+			server.register(input1);
+			
+			LoginResponse loginResult = server.login(new LoginInput("twilkes149", "password"));
+			System.out.println("logged in:");
+			System.out.println(loginResult.toString());
+		}
+		catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+	}
+}

@@ -1,0 +1,88 @@
+package serverModel;
+/**
+ * The object oriented model of a person<br>
+ * Fields: firstName, lastName, gender, mother, father, spouse, descendant, id<br>
+ * @author Tucker
+ *
+ */
+public class Person {
+	protected static int count = 0;
+	protected String firstName;
+	protected String lastName;
+	protected char gender;
+	protected Person mother;
+	protected Person father;
+	protected Person spouse;
+	protected User descendant;
+	protected int id;
+	protected ArrayList<Event> eventList;
+	
+	public Person() {
+		eventList = new ArrayList<Event>();
+		id = count;//the id of the person
+		count++;//increment the id for the next person created
+	}
+	
+	public Person(String firstName, String lastName, char gender, Person mother, Person father, Person spouse, User descendant) {
+		id = count;
+		count++;
+		this.lastName = lastName;
+		this.firstName = firstName;
+		this.gender = gender;
+		this.mother = mother;
+		this.father = father;
+		this.spouse = spouse;
+		this.descendant = descendant;
+		eventList = new ArrayList<Event>();
+	}
+	
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public char getGender() {
+		return gender;
+	}
+	public void setGender(char gender) {
+		this.gender = gender;
+	}
+	public Person getMother() {
+		return mother;
+	}
+	public void setMother(Person mother) {
+		this.mother = mother;
+	}
+	public Person getFather() {
+		return father;
+	}
+	public void setFather(Person father) {
+		this.father = father;
+	}
+	public Person getSpouse() {
+		return spouse;
+	}
+	public void setSpouse(Person spouse) {
+		this.spouse = spouse;
+	}
+	public User getDescendant() {
+		return descendant;
+	}
+	public void setDescendant(User descendant) {
+		this.descendant = descendant;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+
+}

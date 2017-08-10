@@ -1,0 +1,18 @@
+package Services;
+import Services.Input.Input;
+import Services.Response.Response;
+import database.DatabaseDriver;
+/**
+ * An interface for all of the services - allows all of the services to take on the same form
+ * @author Tucker
+ *
+ */
+interface Service {
+	/**
+	 * The interface method for a user to access a service
+	 * @param data the data for the appropriate service
+	 * @return the response for the associated service 
+	 */
+	public Response fillService(Input data);
+	public DatabaseDriver database;
+}

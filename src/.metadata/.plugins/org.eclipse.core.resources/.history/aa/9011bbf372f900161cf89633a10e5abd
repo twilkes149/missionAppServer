@@ -1,0 +1,10 @@
+package Services.ReadJson;
+
+public class ReadJson {
+	
+	public static Names readNames() {
+		Names result = null;
+		
+		return result;
+	}
+}

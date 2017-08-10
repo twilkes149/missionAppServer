@@ -1,0 +1,78 @@
+package database;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+/**
+ * A class that will establish a connection to a database and return the connection
+ * @author Tucker
+ *
+ */
+public class Setup {
+	/**
+	 * Returns a connection to a database
+	 * @param database the name of the database
+	 * @return the connection to the database
+	 * @throws Exception
+	 */
+	public static Connection initialize(String database) throws Exception {
+        Class.forName("org.sqlite.JDBC");
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:" + database + ".db");
+		return connection;
+	}
+	
+	public static void createTables(Connection connection) {
+		try {
+			Statement stat = connection.createStatement();//create the statement
+			stat.executeUpdate("drop table if exists user;");
+		
+			//create the user table
+            stat.executeUpdate("create table if not exists user (id KEY INT UNSIGNED NOT NULL, "
+            		+ "username TEXT NOT NULL, password TEXT NOT NULL, "
+            		+ "email TEXT NOT NULL, firstName TEXT NOT NULL, "
+            		+ "lastName TEXT NOT NULL, gender char(1) NOT NULL, fatherLink INTEGER, "
+            		+ "motherLink INTEGER, spouseLink INTEGER );");
+          
+            //create the person table
+            stat.executeUpdate("create table if not exists person (id KEY INT UNSIGNED NOT NULL, "
+            		+ "firstName TEXT NOT NULL, lastName TEXT NOT NULL, gender char(1) NOT NULL, "
+            		+ "fatherLink INTEGER, motherLink INTEGER, spouseLink INTEGER, descendant INTEGER);");
+            
+            //create the event table
+            stat.executeUpdate("create table if not exists event(id KEY INT UNSIGNED NOT NULL, "
+            		+ "personLink INTEGER NOT NULL, userLink INTEGER NOT NULL, "
+            		+ "type TEXT NOT NULL, year INT NOT NULL);");
+            
+            //create the location table
+            stat.executeUpdate("create table if not exists location (id KEY INT UNSIGNED NOT NULL, "
+            		+ "longitude DOUBLE NOT NULL, latitude DOUBLE NOT NULL, country TEXT NOT NULL, "
+            		+ "city TEXT NOT NULL, eventLink INTEGER NOT NULL);");
+            
+            //create authToken table
+            stat.executeUpdate("create table if not exists authToken (id KEY INT UNSIGNED NOT NULL, "
+            		+ "userLink INTEGER NOT NULL, timeMin INT NOT NULL, timeHour INT NOT NULL, "
+            		+ "dateDay INT NOT NULL, dateMonth INT NOT NULL, dateYear INT NOT NULL);");
+		}
+		catch (SQLException sqlException) {
+			System.err.println("Could not initilize tables in database");
+			System.err.println(sqlException.getMessage());
+		}
+		
+	}
+	
+	//a test method to test creating databases
+	public static void main(String[] args) throws Exception {
+		Connection connection = Setup.initialize("familyHistory");
+		Setup.createTables(connection);
+		System.out.println("done");
+		
+	}
+	
+	//populates the authToken table with some values and then displays them
+	public static void testFunctionality(Connection connection) {
+		
+	}
+}

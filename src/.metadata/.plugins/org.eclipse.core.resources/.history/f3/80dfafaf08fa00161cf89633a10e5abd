@@ -1,0 +1,9 @@
+package serverModel;
+import Services.*;
+
+public class Server {
+
+	public RegisterResponse register(RegisterInput input) {
+		RegisterService service = new ReigisterService();
+	}
+}

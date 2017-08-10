@@ -1,0 +1,10 @@
+package serverModel;
+import Services.Input.*;
+import Services.Response.*;
+
+public class Server {
+
+	public RegisterResponse register(RegisterInput) {
+		return null;
+	}
+}

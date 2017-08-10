@@ -1,0 +1,191 @@
+package database;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import serverModel.AuthToken;
+import serverModel.Person;
+import serverModel.User;
+
+/**
+ * The DAO for a user<br>
+ * Inherits from Person<br>
+ * Fields: userName, password, email<br>
+ * @author Tucker
+ *
+ */
+public class UserDAO extends DatabaseDriver {
+	AuthTokenDAO authTokenDriver;
+	PersonDAO personDriver;
+	public UserDAO(String name) {
+		super(name);
+		personDriver = new PersonDAO(DatabaseDriver.databaseName);
+		authTokenDriver = new AuthTokenDAO(DatabaseDriver.databaseName);
+	}
+
+	/** adds a user to the database
+	 * @param user the user to save to the database
+	 * @return returns true if successful
+	 */
+	public boolean saveUser(User user) throws Exception{
+		//TODO create authToken for each user
+		Connection connection = Setup.initialize(databaseName);
+		PreparedStatement stat = connection.prepareStatement("insert into user values(?,?,?,?,?,?,?,?,?,?)");
+		stat.setString(1, "" + user.getUserId());
+		stat.setString(2, user.getUserName());
+		stat.setString(3, user.getPassword());
+		stat.setString(4, user.getEmail());
+		stat.setString(5, user.getFirstName());
+		stat.setString(6, user.getLastName());
+		stat.setString(7, "" + user.getGender());
+		
+		//this is a try because of recursion tries to save person's twice, but the 
+		//personDriver will throw an exception if the person already exists in the database
+		try {
+			//saving the father, mother, and spouse
+			if (user.getFather() != null) {
+				stat.setString(8, "" + user.getFather().getId());
+				personDriver.savePerson(user.getFather());
+			}
+			else
+				stat.setString(8, "");
+			
+			if (user.getMother() != null) {
+				stat.setString(9, "" + user.getMother().getId());
+				personDriver.savePerson(user.getMother());
+			}
+			else
+				stat.setString(9, "");
+			
+			if (user.getSpouse() != null) {
+				stat.setString(10, "" + user.getSpouse().getId());
+				personDriver.savePerson(user.getSpouse());
+			}
+			else
+				stat.setString(10, "");
+		}
+		catch (Exception e) {
+			//if the person already exists, don't die
+			if (!e.getMessage().equals("This id already exists"))
+				throw e;
+		}
+		stat.addBatch();
+		
+		connection.setAutoCommit(false);
+		stat.executeBatch();
+		connection.setAutoCommit(true);
+		connection.close();
+		//saving the authToken
+		authTokenDriver.saveAuthToken(user.getAuthToken());
+		return true;
+	}
+	
+	/** gets information about a user from the database
+	 * @param id the unique ID of the user
+	 * @return returns the user if it exists, otherwise returns null
+	 */
+	public User getUser(int id) {
+		Connection connection = null;
+		User result = new User();
+		
+		try {
+			connection = Setup.initialize(databaseName);
+			Statement stat = connection.createStatement();
+			//getting the user from the database
+			ResultSet rs = stat.executeQuery("SELECT * from user WHERE id = '" + id + "';");
+
+			//creating the user object to return
+			result.setUserId(id);
+			result.setUserName(rs.getString(2));
+			result.setPassword(rs.getString(3));
+			result.setEmail(rs.getString(4));
+			result.setFirstName(rs.getString(5));
+			result.setLastName(rs.getString(6));
+			result.setGender(rs.getString(7).charAt(0));
+			result.setFather(personDriver.getPerson(rs.getInt(8)));
+			result.setMother(personDriver.getPerson(rs.getInt(9)));
+			result.setSpouse(personDriver.getPerson(rs.getInt(10)));
+			//result.setFather(rs.getString(8));
+			//result.setMother(rs.getString(9));
+			//result.setSpouse(rs.getString(10));
+			result.setAuthToken(authTokenDriver.getAuthToken(result.getUserId()));
+			connection.close();
+		}
+		catch (Exception e) {
+			//TODO comment out these lines
+			System.err.println("error getting a user");
+			System.err.println(e.getMessage());
+			return null;
+		}
+		return result;
+	}
+	
+	/** gets information about a user from the database
+	 * @param userName the userName of the user
+	 * @return returns the user if it exists, otherwise returns null
+	 */
+	public User getUser(String userName) {
+		Connection connection = null;
+		User result = new User();
+		
+		try {
+			connection = Setup.initialize(databaseName);
+			Statement stat = connection.createStatement();
+			//getting the user from the database
+			ResultSet rs = stat.executeQuery("SELECT * from user WHERE username = '" + userName + "';");
+
+			//creating the user object to return
+			result.setUserId(rs.getInt(1));
+			result.setUserName(rs.getString(2));
+			result.setPassword(rs.getString(3));
+			result.setEmail(rs.getString(4));
+			result.setFirstName(rs.getString(5));
+			result.setLastName(rs.getString(6));
+			result.setGender(rs.getString(7).charAt(0));
+			result.setFather(personDriver.getPerson(rs.getInt(8)));
+			result.setMother(personDriver.getPerson(rs.getInt(9)));
+			result.setSpouse(personDriver.getPerson(rs.getInt(10)));
+			//result.setFather(rs.getString(8));
+			//result.setMother(rs.getString(9));
+			//result.setSpouse(rs.getString(10));
+			result.setAuthToken(authTokenDriver.getAuthToken(result.getUserId()));
+			connection.close();
+		}
+		catch (Exception e) {
+			//TODO comment out these lines
+			System.err.println("error getting a user");
+			System.err.println(e.getMessage());
+			return null;
+		}
+		return result;
+	}
+	
+	public static void main(String[] args) {
+		UserDAO userDriver = new UserDAO("familyHistory");
+		try {
+			userDriver.clear();
+			userDriver.initilize();
+			
+			User me = new User("Tucker", "Wilkes", 'm', "twilkes", "password", "twilkes@gmail.com");
+			
+			me.setAuthToken(new AuthToken(me.getUserId()));
+			Person mother = new Person("Christy", "Wilkes", 'm', null, null, null, null);
+			Person father = new Person("Koray", "Wilkes", 'm', null, null, mother, null);
+			mother.setSpouse(father);
+			
+			me.setFather(father);
+			me.setMother(mother);
+			
+			userDriver.saveUser(me);
+			
+			User myself = userDriver.getUser(1);
+			System.out.println(myself.toString());
+		}
+		catch (Exception e) {
+			System.err.println("Error with user: " + e.getMessage());
+		}
+	}
+
+}

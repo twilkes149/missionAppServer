@@ -1,0 +1,94 @@
+package database;
+import serverModel.Person;
+import serverModel.User;
+import serverModel.Location;
+
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+
+/* Notes: make id auto increment in database so no two IDs will be the same
+*/
+
+import serverModel.Event;
+/**
+ * A class that will perform all of the operations on the database<br>
+ * @author Tucker
+ *
+ */
+
+//TODO create table that keeps track of highest index for each table, so reruning the program wont create duplicate ids
+public class DatabaseDriver {
+	public static String databaseName;
+	
+	/**
+	 * @param name The name of the database
+	 */
+	public DatabaseDriver(String name) {
+		databaseName = name;
+		try {
+			System.out.println("Creating tables");
+			Setup.createTables(Setup.initialize(databaseName));
+		}
+		catch (Exception e) {
+			System.err.println("Failed creating tables: ");
+			System.err.println(e.getMessage());
+		}
+	}
+	
+	/** Erases one table from the database
+	 * @param name the name of the table
+	 * @return returns true if successful
+	 */
+	public boolean eraseTable(String tableName) throws Exception{
+		Connection connection;
+		connection = Setup.initialize(databaseName);
+		Statement stat = connection.createStatement();
+		
+		stat.executeUpdate("drop table if exists " + tableName + ";");
+		connection.close();
+		return true;
+	}
+	
+	/** Erases all tables from the database
+	 * @return returns true if successful
+	 */
+	public boolean clear() throws Exception {
+		//a list of all the tables
+		String[] tableList = {"person", "user", "event", "location", "authToken"};
+		//erasing all of the tables
+		for (int i = 0; i < 5; i++)
+			this.eraseTable(tableList[i]);
+		return true;
+	}
+	
+	//a test method
+	public static void main(String[] args) {
+		DatabaseDriver val = new DatabaseDriver("familyHistory");
+		try {
+			val.clear();
+			Setup.createTables(Setup.initialize("familyHistory"));//create the tables
+			
+			Person mother = new Person("Christy", "Wilkes", 'f', null, null, null, null);
+			Person papa = new Person("Doran", "Wilkes", 'm', null, null, null, null);
+			Person father = new Person("Koray", "Wilkes", 'm', null, papa, mother, null);
+			mother.setSpouse(father);
+			Person me = new Person("Tucker", "Wilkes", 'm', mother, father, null, null);
+			me.addEvent("birth", me, null, "12.34", "-98.76", "wichita", "USA", 1994);
+			val.savePerson(me);
+			System.out.println("getting tucker's birth");
+			EventDAO result = val.getEvent(0);
+			System.out.println("got it");
+			System.out.println("Event: \n" + result.toString());
+			//if (val.getPerson(2) != null)
+				//System.out.println("person exists");
+		}
+		catch (Exception e) {
+			System.err.print("error in main: ");
+			System.err.println(e.getMessage());
+		}
+	}
+}

@@ -1,0 +1,21 @@
+package Services;
+import Services.Input.*;
+import Services.Response.*;
+
+public class LoginService implements Service {
+
+	/**
+	 * Logs a user into the server;
+	 * 	checks if the userName is in the database, and if so checks to see if the 
+	 * 	supplied password matches 
+	 * generates an authToken and returns it. 
+	 * @param data the data required to log a user in: userName and password
+	 * @return returns a Response object containing an authToken, userName and personID
+	 */
+	public Response fillService(Input data) {
+		LoginInput input = null;
+		
+		return null;
+	}
+
+}

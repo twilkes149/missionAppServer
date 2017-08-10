@@ -1,0 +1,39 @@
+package Services;
+import Services.Input.*;
+import Services.Response.*;
+import database.DatabaseDriver;
+import database.Setup;
+import database.UserDAO;
+
+public class LoginService implements Service {
+	private DatabaseDriver database;
+	public LoginService() {
+		database = new DatabaseDriver("familyHistory");
+	}
+	/**
+	 * Logs a user into the server;
+	 * 	checks if the userName is in the database, and if so checks to see if the 
+	 * 	supplied password matches 
+	 * generates an authToken and returns it. 
+	 * @param data the data required to log a user in: userName and password
+	 * @return returns a Response object containing an authToken, userName and personID
+	 */
+	public Response fillService(Input data) throws Exception {
+		LoginInput input = null;
+		if (data instanceof LoginInput)
+			input = (LoginInput) data;
+		else
+			throw new Exception("Input data was wrong");
+		
+		//search the database for the userName
+		UserDAO user = database.getUser(input.getUserName());
+		
+		//creating the response object
+		LoginResponse result = new LoginResponse();
+		result.setAuthToken(user.getAuthToken());
+		result.setId(user.getId());
+		result.setUserName(user.getUserName());
+		return null;
+	}
+
+}

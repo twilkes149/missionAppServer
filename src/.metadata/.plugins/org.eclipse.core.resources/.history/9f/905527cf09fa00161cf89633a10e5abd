@@ -1,0 +1,27 @@
+package serverModel;
+import Services.*;
+import Services.Input.*;
+import Services.Response.*;
+
+public class Server {
+
+	public RegisterResponse register(RegisterInput input) throws Exception{
+		RegisterService service = new RegisterService();
+		
+		RegisterResponse result = (RegisterResponse) service.fillService(input);
+		
+		return result;
+	}
+	
+	public static void main(String[] args) {
+		Server server = new Server();
+		
+		RegisterInput input = new RegisterInput();
+		try {
+			server.register(input);
+		}
+		catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+	}
+}

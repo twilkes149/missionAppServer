@@ -1,0 +1,14 @@
+package serverModel;
+import Services.*;
+import Services.Input.*;
+import Services.Response.*;
+
+public class Server {
+
+	public RegisterResponse register(RegisterInput input) {
+		RegisterService service = new RegisterService();
+		
+		service.fillService(input);
+		return null;
+	}
+}

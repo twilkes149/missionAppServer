@@ -1,0 +1,89 @@
+package database;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import serverModel.Event;
+
+/**
+ * The DAO for Events
+ * @author Tucker
+ *
+ */
+public class EventDAO extends DatabaseDriver{
+	LocationDAO databaseLocation;
+	public EventDAO(String name) {
+		super(name);
+		databaseLocation = new LocationDAO(this.databaseName);
+		// TODO Auto-generated constructor stub
+	}
+
+	/** Gets information about an event from the database
+	 * @param id the ID of the event
+	 * @return returns the event if it exists, otherwise returns null
+	 */
+	public Event getEvent (int id) {
+		Connection connection = null;
+		Event result = new Event();
+		try {
+			connection = Setup.initialize(databaseName);
+			Statement stat = connection.createStatement();
+			ResultSet rs = stat.executeQuery("SELECT * from event WHERE id = '" + id + "';");
+			
+			result.setId(rs.getInt(1));
+			//result.setOwner(rs.getString(2));
+			//result.setDescendant(rs.getString(3));
+			result.setType(rs.getString(4));
+			rs.close();
+			
+			result.setLocation(getLocation(result.getId()));
+			connection.close();
+			return result;
+		}
+		catch (Exception e) {//failed getting event probably because it's not in the database
+			return null;
+		}
+	}
+	
+	/** adds an event to the database
+	 * @param event the even to save to the database
+	 * @return returns true if successful
+	 */
+	public boolean saveEvent(Event event) throws Exception{
+		Connection connection = Setup.initialize(databaseName);
+		PreparedStatement stat = connection.prepareStatement("insert into location values(?,?,?,?,?,?);");
+		stat.setString(1, "" + event.getLocation().getEventID());
+		stat.setString(2, "" + event.getLocation().getLongitude());
+		stat.setString(3, "" + event.getLocation().getLatitude());
+		stat.setString(4, "" + event.getLocation().getCountry());
+		stat.setString(5, "" + event.getLocation().getCity());
+		stat.setString(6, "" + event.getId());//link to the person this event belongs to
+		stat.addBatch();
+		
+		connection.setAutoCommit(false);
+		stat.executeBatch();
+		connection.setAutoCommit(true);
+		
+		PreparedStatement stat1 = connection.prepareStatement("insert into event values(?,?,?,?,?);");
+		stat1.setString(1, "" + event.getId());
+		if (event.getOwner() != null)
+			stat1.setString(2, "" + event.getOwner().getId());
+		else
+			stat1.setString(2, "");
+		if (event.getDescendant() != null)
+			stat1.setString(3, "" + event.getDescendant().getUserId());
+		else
+			stat1.setString(3, "");
+		stat1.setString(4, event.getType());
+		stat1.setString(5, "" + event.getYear());
+		stat1.addBatch();
+		
+		connection.setAutoCommit(false);
+		stat1.executeBatch();
+		connection.setAutoCommit(true);
+		connection.close();
+		return true;
+	}
+}
