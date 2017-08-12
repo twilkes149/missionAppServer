@@ -30,7 +30,7 @@ public class PersonHandler implements HttpHandler {
 	}
 	
 	private PersonResponse getPersons(PersonInput input) {
-		PersonService service = new PersonService();
+		PersonService service = new PersonService(databaseName);
 		 
 		PersonResponse result = (PersonResponse) service.fillService(input); 
 		Setup.updateCount();
@@ -56,21 +56,24 @@ public class PersonHandler implements HttpHandler {
 			System.out.println("AuthCode: " + code);
 			AuthToken authToken = authTokenDriver.getAuthTokenValue(code);
 			
+			//need to uncomment following line to check authToken validity
 			if (authToken != null /*&& authToken.isValid()*/) {
 				//getting the user
 				User user = userDriver.getUserID(authToken.getUserID());
 				String userName = user.getUserName();
+				String userID = authToken.getUserID();
 				
 				URI uri = arg0.getRequestURI();
 				String path = uri.getPath();
 				String[] parts = path.split("/");
 				PersonInput input;
 				System.out.println("UserName: " + userName);
+				
 				System.out.println(parts.length);
 				if (parts.length >= 3)
-					input = new PersonInput(userName, parts[2]);
+					input = new PersonInput(userID, parts[2]);
 				else {
-					input = new PersonInput(userName);
+					input = new PersonInput(userID);
 					System.out.println("got here");
 				}
 				result = this.getPersons(input);//getting the persons
@@ -86,8 +89,12 @@ public class PersonHandler implements HttpHandler {
 			System.err.println("Error getting persons");
 			result = new PersonResponse("Unknown error occured");
 		}
-		gson.toJson(result, writer);
+		writer.write(gson.toJson(result));
 		writer.close();
+		
+		
+		//gson.toJson(result, writer);
+		//writer.close();
 	}
 
 }

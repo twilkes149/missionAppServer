@@ -1,17 +1,18 @@
 package Services.Response;
 import java.util.ArrayList;
+import java.util.TreeMap;
 /**
  * A class that contains an array of PResponse objects, which represent persons in the database
  * @author Tucker
  *
  */
 public class PersonResponse /*extends PResponse*/ extends Response{
-	private ArrayList<PResponse> list;
+	private TreeMap<String, ArrayList<PResponse>> list;
 	private boolean error;
 	private String message;
 	
 	public PersonResponse() {
-		list = new ArrayList<PResponse>();
+		list = new TreeMap();
 	}
 	
 	public PersonResponse(String message) {
@@ -49,11 +50,9 @@ public class PersonResponse /*extends PResponse*/ extends Response{
 	 * @param index the index of the person response to get
 	 * @return returns a PResponse object, which contains all the details for a person in the database
 	 */
-	public PResponse get(int index) {
-		if (index < list.size())
-			return list.get(index);
-		else
-			return null;
+	public ArrayList<PResponse> get(String familyID) {
+		
+		return list.get(familyID);
 	}
 	
 	/**
@@ -64,11 +63,11 @@ public class PersonResponse /*extends PResponse*/ extends Response{
 		return list.size();
 	}
 	
-	public void setList(ArrayList<PResponse> val) {
+	public void setList(TreeMap<String, ArrayList<PResponse>> val) {
 		this.list = val;
 	}
 	
-	public ArrayList<PResponse> getList() {
+	public TreeMap<String, ArrayList<PResponse>> getList() {
 		return list;
 	}
 

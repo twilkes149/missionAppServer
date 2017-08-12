@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import serverModel.Event;
+import serverModel.FamilyID;
 import serverModel.Person;
 import serverModel.User;
 
@@ -20,6 +21,8 @@ public class Setup {
 	public static final String EVENT_COLUMN = "eventCount";
 	public static final String PERSON_COLUMN = "personCount";
 	public static final String USER_COLUMN = "userCount";
+	public static final String FAMILY_COLUMN = "familyCount";
+	public static final String DATABASENAME = "testDatabase";
 	
 	
 	public Setup()
@@ -48,7 +51,7 @@ public class Setup {
 	public static void initCounts() {
 		Connection connection;
 		try {
-			connection = Setup.initialize("familyHistory");
+			connection = Setup.initialize(DATABASENAME);
 			Statement stat = connection.createStatement();
 			
 			//there should only ever be one row in this table
@@ -56,15 +59,18 @@ public class Setup {
 			int eventCount=0;
 			int personCount=0;
 			int userCount=0;
+			int familyCount = 0;
 			if (rs.next()) {
 				eventCount = rs.getInt(1);
 				personCount = rs.getInt(2);
 				userCount =rs.getInt(3);
+				familyCount = rs.getInt(4);
 			}
 			//the min IDs users, events and person can have
 			Event.setCount(eventCount);
 			Person.setCount(personCount);
 			User.setCount(userCount);
+			FamilyID.setCount(familyCount);
 			stat.close();
 			connection.close();
  		}
@@ -77,13 +83,14 @@ public class Setup {
 		updateCount(Event.getCount(), EVENT_COLUMN);
 		updateCount(User.getCount(), USER_COLUMN);
 		updateCount(Person.getCount(), PERSON_COLUMN);
+		updateCount(FamilyID.getCount(), FAMILY_COLUMN);
 	}
 	
 	private static void updateCount(int num, String column) {
 		Connection connection;
 		System.out.println("Updating count table");
 		try {
-			connection = Setup.initialize("familyHistory");
+			connection = Setup.initialize(DATABASENAME);
 			Statement stat = connection.createStatement();
 			stat.executeUpdate("UPDATE countTable SET " + column + " ='" + num + "';");
 			stat.close();
@@ -129,9 +136,11 @@ public class Setup {
             
             //creating a table to store highest id values
             stat.executeUpdate("create table if not exists countTable(eventCount INT NOT NULL, "
-            		+ "personCount INT NOT NULL, userCount INT NOT NULL);");
+            		+ "personCount INT NOT NULL, userCount INT NOT NULL, familyCount INT NOT NULL);");
             
-            stat.executeUpdate("create table if not exists families(familyID TEXT NOT NULL, userID TEXT NOT NULL);");
+            stat.executeUpdate("create table if not exists familyUser(familyID TEXT NOT NULL, userID TEXT NOT NULL);");
+            
+            stat.executeUpdate("create table if not exists families(id NUMBER NOT NULL, name TEXT NOT NULL);");
             connection.close();
 		}
 		catch (SQLException sqlException) {

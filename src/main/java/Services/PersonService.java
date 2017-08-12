@@ -1,9 +1,12 @@
 package Services;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 import Services.Input.*;
 import Services.Response.*;
 import database.EventDAO;
+import database.FamilyDAO;
+import database.FamilyIDDAO;
 import database.PersonDAO;
 import serverModel.Person;
 /**
@@ -12,9 +15,15 @@ import serverModel.Person;
  */
 public class PersonService implements Service {
 	private PersonDAO personDriver;
+	private FamilyIDDAO familyIDDriver;
+	private String databaseName;
+	private FamilyDAO familyDriver;
 	
-	public PersonService() {
-		personDriver = new PersonDAO("familyHistory");
+	public PersonService(String name) {
+		this.databaseName = name;
+		personDriver = new PersonDAO(databaseName);
+		familyIDDriver = new FamilyIDDAO(databaseName);
+		familyDriver = new FamilyDAO(databaseName);
 	}
 	
 	/**
@@ -32,19 +41,23 @@ public class PersonService implements Service {
 		if (input == null)
 			return new PersonResponse("Input data was invalid");
 		
-		ArrayList<PResponse> list = null;
-		list = personDriver.getPersonsFromUser(input.getUserName());
+		String userID = input.getUserID();		
+		System.out.println("userID: " + userID);
+		ArrayList<String> families = familyIDDriver.getFamilies(userID);//getting a list of families the user belongs to
+		System.out.println("families:" + families.toString());
+				
+		TreeMap<String, ArrayList<PResponse>> listOfFamilies = new TreeMap<String, ArrayList<PResponse>>();
 		
-		if (input.getPersonID() != null)
-			for (int i = 0; i < list.size(); i++)
-				if (!list.get(i).getPersonId().equals(input.getPersonID())) {
-					list.remove(i);
-					i--;
-				}
-		if (list.size() <= 0)
-			response = new PersonResponse("Error getting persons: there were no persons for that user");
+		for (int i = 0; i < families.size(); i++) {
+			
+			String familyName = familyDriver.getFamily(families.get(i)).getFamilyName();
+			
+			listOfFamilies.put(familyName, personDriver.getPersonsFromFamily(families.get(i)));
+		}
+		//System.out.println("family list:" + listOfFamilies.toString());
 		
-		response.setList(list);
+		response.setList(listOfFamilies);
+		
 		return response;
 	}
 	
@@ -53,9 +66,9 @@ public class PersonService implements Service {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		PersonService service = new PersonService();
+		PersonService service = new PersonService("testDatabase");
 		
-		PersonResponse result = (PersonResponse) service.fillService(new PersonInput("twilkes","8"));
+		PersonResponse result = (PersonResponse) service.fillService(new PersonInput("1","8"));
 		System.out.print(result);
 	}
 

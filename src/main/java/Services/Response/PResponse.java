@@ -1,4 +1,7 @@
 package Services.Response;
+
+import serverModel.FamilyID;
+
 /**
  * A class that contains all the information representing a person in the database
  * Not meant to be directly instantiated.
@@ -11,21 +14,22 @@ public class PResponse extends Response {
 	private String lastName;
 	private char gender;
 	private String parentLink;
-	private String familyID;
+	private String familyName;
 	
-	public PResponse(String firstName, String lastName, char gender, String parentLink, String familyID) {
+	public PResponse(String id, String firstName, String lastName, char gender, String parentLink, String familyName) {
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.gender = gender;
 		this.parentLink = parentLink;
-		this.familyID = familyID;
+		this.familyName = familyName;
+		this.personId = id;
 	}
 	
 	public PResponse() {		
 		personId = null;
 		firstName = null;
 		lastName = null;
-		familyID = null;
+		familyName = null;
 		parentLink = null;
 		gender = '\0';
 	}
@@ -34,7 +38,7 @@ public class PResponse extends Response {
 	 * returns a string representation of this object
 	 */
 	public String toString() {
-		String result = firstName + " " + lastName + "ID: " + personId;
+		String result = firstName + " " + lastName + ", ID: " + personId;
 		return result;
 	}
 
@@ -78,11 +82,11 @@ public class PResponse extends Response {
 		this.parentLink = parentLink;
 	}
 
-	public String getFamilyID() {
-		return familyID;
+	public String getFamilyName() {
+		return familyName;
 	}
 
-	public void setFamilyID(String familyID) {
-		this.familyID = familyID;
+	public void setFamilyID(String familyName) {
+		this.familyName = familyName;
 	}	
 }

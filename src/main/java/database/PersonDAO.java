@@ -38,18 +38,25 @@ public class PersonDAO extends DatabaseDriver{
 		try {
 			connection = Setup.initialize(DatabaseDriver.databaseName);
 			Statement stat = connection.createStatement();			
-			
+						
+			ResultSet nameResult = stat.executeQuery("SELECT name FROM families WHERE id ='" + familyID + "';");
+			String familyName = null;
+			if (nameResult.next())
+				familyName = nameResult.getString(1);
+			nameResult.close();
+			System.out.println("family name: " + familyName);
 			ResultSet rs = stat.executeQuery("SELECT * from person WHERE familyID = '" + familyID + "';");
 			
 			//getting all of the persons
 			while (rs.next()) {
 				PResponse curr;
+				String id = rs.getString(1);
 				String firstName = rs.getString(2);
 				String lastName = rs.getString(3);
 				char gender = rs.getString(4).charAt(0);
 				String parentLink = rs.getString(5);				
 				
-				curr = new PResponse(firstName, lastName, gender, parentLink, familyID);				
+				curr = new PResponse(id, firstName, lastName, gender, parentLink, familyName);				
 				result.add(curr);
 			}
 			rs.close();
@@ -58,9 +65,7 @@ public class PersonDAO extends DatabaseDriver{
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-		}
-		
-		
+		}				
 		return result;
 	}
 	
@@ -217,12 +222,15 @@ public class PersonDAO extends DatabaseDriver{
 	public static void main(String[] args) {
 		PersonDAO personDriver = new PersonDAO("testDatabase");
 		try {			
-			personDriver.clear();
+			//personDriver.clear();
 			personDriver.initilize();
-			personDriver.savePerson(new Person("Tucker", "Wilkes", 'm', null, "dkd8ds9dssd66"));
+			//personDriver.savePerson(new Person("Tucker", "Wilkes", 'm', null, "dkd8ds9dssd66"));
+			//personDriver.savePerson(new Person("Koray", "Wilkes", 'm', null, "dkd8ds9dssd66"));
+			//personDriver.savePerson(new Person("Porter", "Wilkes", 'm', null, "dkd8ds9dssd66"));
 			
-			Person person = personDriver.getPerson("1");
-			System.out.println(person.toString());
+			ArrayList<PResponse> result = personDriver.getPersonsFromFamily("dkd8ds9dssd66");						
+			
+			System.out.println(result.toString());
 		}
 		catch (Exception e) {
 			System.err.println("Error with person: " + e.getMessage() + "\n");

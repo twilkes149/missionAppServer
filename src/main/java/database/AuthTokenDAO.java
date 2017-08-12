@@ -38,6 +38,8 @@ public class AuthTokenDAO extends DatabaseDriver{
 			connection = Setup.initialize(this.databaseName);
 			Statement stat = connection.createStatement();
 			stat.executeUpdate("DELETE FROM authToken WHERE userLink = '" + userID + "';");
+			stat.close();
+			connection.close();
 			return true;
 		}
 		catch (Exception e) {
@@ -70,6 +72,7 @@ public class AuthTokenDAO extends DatabaseDriver{
 		connection.setAutoCommit(false);
 		stat.executeBatch();
 		connection.setAutoCommit(true);
+		stat.close();
 		connection.close();
 		return true;
 	}
@@ -95,6 +98,8 @@ public class AuthTokenDAO extends DatabaseDriver{
 			String value = rs.getString(7);
 			result = new AuthToken(userID, hour, min, day, month, year);
 			result.setToken(value);
+			rs.close();
+			stat.close();
 			connection.close();
 			return result;
 		}
@@ -125,7 +130,10 @@ public class AuthTokenDAO extends DatabaseDriver{
 			String value = rs.getString(7);
 			result = new AuthToken(userID, hour, min, day, month, year);
 			result.setToken(value);
+			rs.close();
+			stat.close();
 			connection.close();
+			System.out.println("getting token");
 			return result;
 		}
 		catch (Exception e) {

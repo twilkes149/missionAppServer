@@ -7,29 +7,29 @@ package Services.Input;
  *
  */
 public class PersonInput extends Input{
-	private String userName;
+	private String userID;
 	private String personID;
 	
 	public PersonInput() {
-		userName = null;
+		userID = null;
 		personID = null;
 	}
 	
-	public PersonInput(String userName) {
-		this.userName = userName;
+	public PersonInput(String userID) {
+		this.userID = userID;
 	}
 	
-	public PersonInput(String userName, String personID) {
-		this.userName = userName;
+	public PersonInput(String userID, String personID) {
+		this.userID = userID;
 		this.personID = personID;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUserID() {
+		return userID;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUserID(String userName) {
+		this.userID = userName;
 	}
 
 	public String getPersonID() {
@@ -39,6 +39,4 @@ public class PersonInput extends Input{
 	public void setPersonID(String personID) {
 		this.personID = personID;
 	}
-	
-	
 }

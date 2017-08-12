@@ -51,7 +51,7 @@ public class Server {
 		//server.createContext("/load", new LoadHandler("familyHistory"));
 		server.createContext("/user/login", new LoginHandler("testDatabase"));
 		server.createContext("/user/register", new RegisterHandler("testDatabase"));
-		//server.createContext("/person", new PersonHandler("familyHistory"));
+		server.createContext("/person", new PersonHandler("testDatabase"));
 		//server.createContext("/event", new EventHandler("familyHistory"));
 		
 		server.createContext("/", new DefaultHandler());

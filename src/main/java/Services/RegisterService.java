@@ -2,9 +2,12 @@ package Services;
 
 import Services.Input.*;
 import database.AuthTokenDAO;
+import database.FamilyDAO;
+import database.FamilyIDDAO;
 import database.UserDAO;
 import Services.Response.*;
 import serverModel.AuthToken;
+import serverModel.FamilyID;
 import serverModel.User;
 
 /**
@@ -15,12 +18,16 @@ import serverModel.User;
 public class RegisterService implements Service {
 	private UserDAO userDriver;
 	private AuthTokenDAO authTokenDriver;
+	private FamilyIDDAO familyUserDriver;
+	private FamilyDAO familyDriver;
 	private String databaseName;
 	
 	public RegisterService(String databaseName) {
 		this.databaseName = databaseName;
 		userDriver = new UserDAO(databaseName);
 		authTokenDriver = new AuthTokenDAO(databaseName);
+		familyUserDriver = new FamilyIDDAO(databaseName);
+		familyDriver = new FamilyDAO(databaseName);
 	}
 
 	/** Creates a user using the provided information. Adds data to the database and returns an authToken for the user
@@ -41,6 +48,17 @@ public class RegisterService implements Service {
 		//check to make sure there are no user's with same userName
 		if (userDriver.getUser(input.getUsername()) != null)
 			throw new Exception("That userName already exists");
+		
+		//if we have a family id, save it to familyID
+		if (input.getFamilyID() != null && input.getFamilyID().length() > 1)
+			familyUserDriver.saveFamilyID(user.getUserId(), input.getFamilyID());
+		
+		//if we have a family name, create a new family and add the current user to familyID
+		if (input.getFamilyName() != null && input.getFamilyName().length() > 1) {
+			FamilyID newFamily = new FamilyID(input.getFamilyName());
+			familyDriver.saveFamily(newFamily.getId(), newFamily.getFamilyName());//saving the family name
+			familyUserDriver.saveFamilyID(newFamily.getId(), user.getUserId());//saving the userID and familyID in cross reference table
+		}			
 		
 		//saving the user&authToken to the database
 		userDriver.saveUser(user);
@@ -65,9 +83,10 @@ public class RegisterService implements Service {
 		try {
 			//test.clear();
 			test.initilize();
-			val.fillService(new RegisterInput("twilkes149", "password"));
-			val.fillService(new RegisterInput("jhblender", "password123"));
-			val.fillService(new RegisterInput("username", "pw"));
+			RegisterInput input = new RegisterInput("twilkes", "password");
+			input.setFamilyName("wilkes");
+			val.fillService(input);
+			
 		}
 		catch (Exception e) {
 			e.printStackTrace();

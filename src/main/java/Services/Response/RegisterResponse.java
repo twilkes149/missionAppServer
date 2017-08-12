@@ -12,10 +12,7 @@ public class RegisterResponse extends Response{
 	private String ID;
 	private AuthToken authToken;
 	private boolean error;
-	private String message;
-	private String fatherID;
-	private String motherID;
-	private String spouseID;
+	private String message;	
 	
 	/**
 	 * sets all fields to null
@@ -30,31 +27,6 @@ public class RegisterResponse extends Response{
 		this.message = message;
 		error = true;
 	}
-	
-	public void setFatherID(String father) {
-		fatherID = father;
-	}
-
-	public void setMotherID(String mother) {
-		motherID = mother;
-	}
-
-	public void setSpouseID(String spouse) {
-		spouseID = spouse;
-	}
-
-	public String getFatherID() {
-		return fatherID;
-	}
-
-	public String getMotherID() {
-		return motherID;
-	}
-
-	public String getSpouseID() {
-		return spouseID;
-	}
-
 	
 	public boolean getError() {
 		return error;

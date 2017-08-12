@@ -45,9 +45,9 @@ public class DatabaseDriver {
 	 */
 	public boolean clear() throws Exception {
 		//a list of all the tables
-		String[] tableList = {"person", "user", "event", "location", "authToken", "countTable"};
+		String[] tableList = {"person", "user", "event", "location", "authToken", "countTable", "families", "familyUser"};
 		//erasing all of the tables
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < tableList.length; i++)
 			this.eraseTable(tableList[i]);
 		
 		Connection connection;
@@ -56,7 +56,7 @@ public class DatabaseDriver {
 			Setup.createTables(Setup.initialize(databaseName));
 			Statement stat = connection.createStatement();
 			
-			stat.executeUpdate("insert into countTable values(1,1,1);");
+			stat.executeUpdate("insert into countTable values(1,1,1,1);");
 			stat.close();
 			connection.close();
 			Event.setCount(1);

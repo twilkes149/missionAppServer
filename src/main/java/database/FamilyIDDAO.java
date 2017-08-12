@@ -20,13 +20,13 @@ public class FamilyIDDAO extends DatabaseDriver{
 			
 			//checking to see if this tuple already exists in the database
 			Statement test = connection.createStatement();
-			ResultSet testSet = test.executeQuery("SELECT * FROM families WHERE familyID ='" + id + "' AND "
+			ResultSet testSet = test.executeQuery("SELECT * FROM familyUser WHERE familyID ='" + id + "' AND "
 			+ "userID = '" + userID + "';");
 			
 			if (testSet.next())
 				throw new Exception("Tuple already exists");
 			
-			PreparedStatement stat = connection.prepareStatement("insert into families values(?,?);");
+			PreparedStatement stat = connection.prepareStatement("insert into familyUser values(?,?);");
 			stat.setString(1, id);
 			stat.setString(2, userID);
 			stat.addBatch();
@@ -55,18 +55,21 @@ public class FamilyIDDAO extends DatabaseDriver{
 		try {
 			connection = Setup.initialize(databaseName);
 			Statement stat = connection.createStatement();
-			ResultSet rs = stat.executeQuery("SELECT * FROM families WHERE userID = '" + userID + "';");
+			ResultSet rs = stat.executeQuery("SELECT * FROM familyUser WHERE userID = '" + userID + "';");
 			
 			
 			result = new ArrayList<String>();
 			while (rs.next()) {
 				result.add(rs.getString(1));				
 			}
+			stat.close();
+			rs.close();
+			connection.close();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 			return null;
-		}
+		}		
 		return result;
 	}
 	

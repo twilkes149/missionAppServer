@@ -93,8 +93,9 @@ public class UserDAO extends DatabaseDriver {
 			result.setUserId(rs.getString(1));
 			result.setUserName(rs.getString(2));
 			result.setPassword(rs.getString(3));
-			
+						
 			rs.close();
+			stat.close();
 			connection.close();
 		}
 		catch (Exception e) {
